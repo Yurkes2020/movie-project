@@ -9,9 +9,7 @@ export const SearchResultsPage = () => {
 	const [searchParams] = useSearchParams();
 	const query = searchParams.get("query") || "";
 	const dispatch = useAppDispatch();
-	const { searchResults} = useAppSelector((state) => state.moviesSlice);
-
-	console.log(searchResults)
+	const { searchResults } = useAppSelector((state) => state.moviesSlice);
 
 	useEffect(() => {
 		if (query) {
@@ -20,12 +18,14 @@ export const SearchResultsPage = () => {
 	}, [dispatch, query]);
 
 	if (!searchResults.length) {
-		return <div >Нічого не знайдено</div>;
+		return <div className="p-4 text-center text-gray-500">Нічого не знайдено</div>;
 	}
 
 	return (
 		<div className="p-4">
-			<h2 >Результати пошуку: <span >{query}</span></h2>
+			<h2 className="text-xl font-semibold mb-4">
+				Результати пошуку: <span className="font-bold text-primary">{query}</span>
+			</h2>
 			<MoviesList movies={searchResults} />
 		</div>
 	);

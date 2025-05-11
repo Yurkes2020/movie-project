@@ -15,11 +15,12 @@ export const GenresBadge = () => {
 	}, [dispatch]);
 
 	return (
-		<div >
+		<div className="p-4 flex flex-wrap gap-2">
 			{genres.map((genre) => (
 				<Link
 					to={`/genre/${genre.id}`}
 					key={genre.id}
+					className="bg-gray-700 text-white py-1 px-4 rounded-full text-sm hover:bg-gray-600 transition-colors"
 				>
 					{genre.name}
 				</Link>

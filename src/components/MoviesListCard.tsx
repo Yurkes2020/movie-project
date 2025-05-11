@@ -12,11 +12,11 @@ export const MoviesListCard = ({ movie }: Props) => {
 	const { poster_path, title, vote_average, overview } = movie;
 
 	return (
-		<div >
+		<div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
 			<Link to={`/movie/${movie.id}`}>
 				<PosterPreview posterPath={poster_path} title={title} />
 			</Link>
-			<div >
+			<div className="p-4">
 				<MovieInfo title={title} overview={overview} />
 				<StarsRating rating={vote_average} />
 			</div>

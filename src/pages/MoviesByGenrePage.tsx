@@ -16,5 +16,9 @@ export const MoviesByGenrePage = () => {
 		}
 	}, [genreId, dispatch]);
 
-	return <MoviesList movies={movies} />;
+	return (
+		<div className="p-4">
+			<MoviesList movies={movies} />
+		</div>
+	);
 };
