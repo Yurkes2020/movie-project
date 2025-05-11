@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from "../components/Header.tsx";
+import {ScrollToTopButton} from "../components/ScrollToTopButton.tsx";
 
 export const MainLayout = () => {
 	return (
@@ -8,6 +9,7 @@ export const MainLayout = () => {
 			<main className="flex-1 p-4">
 				<Outlet />
 			</main>
+			<ScrollToTopButton />
 		</div>
 	);
 };

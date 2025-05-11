@@ -16,7 +16,6 @@ export const StarsRating: React.FC<StarsRatingProps> = ({ rating }) => {
 				starDimension="20px"
 				starSpacing="5px"
 			/>
-			<span className="ml-2 text-gray-700 text-sm">{rating}/10</span>
 		</div>
 	);
 };

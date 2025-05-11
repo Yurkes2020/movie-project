@@ -9,15 +9,19 @@ const headers = {
 };
 
 export const moviesApi = {
-	async fetchMovies() {
+	async fetchMovies(page = 1) {
 		try {
-			const response = await axios.get(`${API_URL}/discover/movie?language=en-US&page=1&sort_by=popularity.desc`, { headers });
-			return response.data.results;
+			const response = await axios.get(
+				`${API_URL}/discover/movie?language=en-US&page=${page}&sort_by=popularity.desc`,
+				{ headers }
+			);
+			return response.data;
 		} catch (error) {
 			console.error('Error fetching movies:', error);
 			throw error;
 		}
 	},
+
 
 	async fetchMovieById(id: number) {
 		try {
@@ -39,24 +43,28 @@ export const moviesApi = {
 		}
 	},
 
-	async fetchMoviesByGenre(genreId: number) {
+	async fetchMoviesByGenre(genreId: number, page: number = 1) {
 		try {
-			const response = await axios.get(`${API_URL}/discover/movie?with_genres=${genreId}&language=en-US&page=1`, { headers });
-			return response.data.results;
+			const response = await axios.get(
+				`${API_URL}/discover/movie?with_genres=${genreId}&language=en-US&page=${page}`,
+				{ headers }
+			);
+			return response.data;
 		} catch (error) {
 			console.error('Error fetching movies by genre:', error);
 			throw error;
 		}
-	},
+	}
+	,
 
 
-	async searchMovies(query: string) {
+	async searchMovies(query: string, page: number = 1) {
 		try {
 			const response = await axios.get(
-				`${API_URL}/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`,
+				`${API_URL}/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=${page}&include_adult=false`,
 				{ headers }
 			);
-			return response.data.results;
+			return response.data;
 		} catch (error) {
 			console.error('Error searching movies:', error);
 			throw error;

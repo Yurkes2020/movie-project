@@ -9,11 +9,11 @@ export const PosterPreview = ({ posterPath, title }: PosterPreviewProps) => {
 		: "/no-image.png";
 
 	return (
-		<div className="w-full h-96 bg-gray-200 flex justify-center items-center">
+		<div className="relative w-full aspect-[2/3] overflow-hidden rounded-md">
 			<img
 				src={posterUrl}
 				alt={title}
-				className="object-cover w-full h-full rounded-lg"
+				className="w-full h-full object-cover object-top"
 			/>
 		</div>
 	);
