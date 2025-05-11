@@ -2,31 +2,23 @@ import type {MovieType} from "../../types/movieType.ts";
 import {createAsyncThunk, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import type {MovieByIdType} from "../../types/movieByIdType.ts";
 import type {Genre} from "../../types/genreType.ts";
+import {moviesApi} from "../../api/moviesApi.ts";
 
 type moviesSliceType = {
 	movies: MovieType[];
 	movie: MovieByIdType | null;
 	genres: Genre[];
-	movieGenres: Genre[];
+	movieGenres: MovieType[];
+	searchResults: MovieType[];
 	isLoading: boolean;
 };
 
-const initialState: moviesSliceType = {movies: [], movie: null,genres: [],movieGenres: [], isLoading: false};
+const initialState: moviesSliceType = {movies: [], movie: null,genres: [],movieGenres: [],searchResults: [], isLoading: false};
 
 const getMovies = createAsyncThunk('moviesSlice/getMovies', async (_, thunkApi) => {
-	const url = 'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc';
-	const options = {
-		method: 'GET',
-		headers: {
-			accept: 'application/json',
-			Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMTRiZmVhYTk0OTQ2ZTllYThjMTkzODlmNjg0MmU0NiIsIm5iZiI6MS42NjUwNDQ2MDY5MDIwMDAyZSs5LCJzdWIiOiI2MzNlOTA3ZWE2ZTJkMjAwN2ZmNThlMjciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.YcBVbRi7QK3OFn6GNXDcRW8vaoJlbQmpkOo7X0cbPx4'
-		}
-	};
+
 	try {
-		const data = await fetch(url, options)
-			.then(res => res.json())
-			.then(json => json.results)
-			.catch(err => console.error(err));
+		const data = await moviesApi.fetchMovies();
 
 		return thunkApi.fulfillWithValue(data)
 	} catch (err) {
@@ -39,24 +31,10 @@ const getMovies = createAsyncThunk('moviesSlice/getMovies', async (_, thunkApi) 
 const getMovieById = createAsyncThunk(
 	'movieSlice/getMovieById',
 	async (id: number, thunkApi) => {
-		const url = `https://api.themoviedb.org/3/movie/${id}`;
 
-		const options = {
-			method: 'GET',
-			headers: {
-				accept: 'application/json',
-				Authorization:
-					'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMTRiZmVhYTk0OTQ2ZTllYThjMTkzODlmNjg0MmU0NiIsIm5iZiI6MS42NjUwNDQ2MDY5MDIwMDAyZSs5LCJzdWIiOiI2MzNlOTA3ZWE2ZTJkMjAwN2ZmNThlMjciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.YcBVbRi7QK3OFn6GNXDcRW8vaoJlbQmpkOo7X0cbPx4',
-			},
-		};
 
 		try {
-			const data = await fetch(url, options)
-				.then(res => res.json())
-				.catch(err => {
-					console.error(err);
-					throw err;
-				});
+			const data = await moviesApi.fetchMovieById(id);
 
 			return thunkApi.fulfillWithValue(data);
 		} catch (err) {
@@ -69,21 +47,11 @@ const getMovieById = createAsyncThunk(
 const getGenres = createAsyncThunk(
 	'moviesSlice/getGenres',
 	async (_, thunkApi) => {
-		const url = 'https://api.themoviedb.org/3/genre/movie/list?language=en';
 
-		const options = {
-			method: 'GET',
-			headers: {
-				accept: 'application/json',
-				Authorization:
-					'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMTRiZmVhYTk0OTQ2ZTllYThjMTkzODlmNjg0MmU0NiIsIm5iZiI6MS42NjUwNDQ2MDY5MDIwMDAyZSs5LCJzdWIiOiI2MzNlOTA3ZWE2ZTJkMjAwN2ZmNThlMjciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.YcBVbRi7QK3OFn6GNXDcRW8vaoJlbQmpkOo7X0cbPx4',
-			},
-		};
 
 		try {
-			const response = await fetch(url, options);
-			const data = await response.json();
-			return thunkApi.fulfillWithValue(data.genres);
+			const data = await moviesApi.fetchGenres();
+			return thunkApi.fulfillWithValue(data);
 		} catch (err) {
 			return thunkApi.rejectWithValue(err);
 		}
@@ -93,26 +61,23 @@ const getGenres = createAsyncThunk(
 const getMoviesByGenre = createAsyncThunk(
 	"moviesSlice/getMoviesByGenre",
 	async (genreId: number, thunkApi) => {
-		const url = `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&page=1`;
 
-		const options = {
-			method: "GET",
-			headers: {
-				accept: "application/json",
-				Authorization:
-					"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMTRiZmVhYTk0OTQ2ZTllYThjMTkzODlmNjg0MmU0NiIsIm5iZiI6MS42NjUwNDQ2MDY5MDIwMDAyZSs5LCJzdWIiOiI2MzNlOTA3ZWE2ZTJkMjAwN2ZmNThlMjciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.YcBVbRi7QK3OFn6GNXDcRW8vaoJlbQmpkOo7X0cbPx4",
-			},
-		};
 
 		try {
-			const data = await fetch(url, options)
-				.then((res) => res.json())
-				.then((json) => json.results)
-				.catch((err) => {
-					console.error(err);
-					throw err;
-				});
+			const data = await moviesApi.fetchMoviesByGenre(genreId);
 
+			return thunkApi.fulfillWithValue(data);
+		} catch (err) {
+			return thunkApi.rejectWithValue(err);
+		}
+	}
+);
+
+const searchMovies = createAsyncThunk(
+	'moviesSlice/searchMovies',
+	async (query: string, thunkApi) => {
+		try {
+			const data = await moviesApi.searchMovies(query); // Викликаємо функцію API для пошуку
 			return thunkApi.fulfillWithValue(data);
 		} catch (err) {
 			return thunkApi.rejectWithValue(err);
@@ -144,9 +109,11 @@ export const moviesSlice = createSlice({
 			.addCase(getMoviesByGenre.fulfilled, (state, action: PayloadAction<MovieType[]>) => {
 			state.movies = action.payload;
 
-		})
+		}).addCase(searchMovies.fulfilled, (state, action: PayloadAction<MovieType[]>) => {
+			state.searchResults = action.payload;
+		});
 
 	}
 })
 
-export const moviesSliceActions = {...moviesSlice.actions, getMovies, getMovieById,getGenres,getMoviesByGenre };
+export const moviesSliceActions = {...moviesSlice.actions, getMovies, getMovieById,getGenres,getMoviesByGenre ,searchMovies};
